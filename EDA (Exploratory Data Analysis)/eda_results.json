@@ -1,0 +1,135 @@
+{
+  "test_analysis": {
+    "rows": 5000,
+    "columns": [
+      "user_id"
+    ],
+    "available_columns": [
+      "user_id"
+    ],
+    "unique_users": 5000,
+    "unique_items": "not_available",
+    "time_range": "not_available"
+  },
+  "items_analysis": {
+    "rows": 6000,
+    "unique_categories": 358,
+    "null_names": 0,
+    "unique_names": 4364,
+    "columns": [
+      "item_id",
+      "itemname",
+      "catalogid",
+      "variant_id",
+      "model_id"
+    ]
+  },
+  "orders_analysis": {
+    "rows": 4000,
+    "columns": [
+      "item_id",
+      "user_id",
+      "last_status",
+      "created_timestamp"
+    ],
+    "status_distribution": {
+      "delivered_orders": 2093,
+      "canceled_orders": 1502,
+      "proccesed_orders": 405
+    },
+    "delivered_orders": 2093,
+    "canceled_orders": 1502,
+    "unique_users": 3742,
+    "unique_items": 980,
+    "time_range": {
+      "min": "2025-01-01 00:10:21.266000",
+      "max": "2025-07-01 23:00:35.106000"
+    }
+  },
+  "tracker_analysis": {
+    "rows": 2000,
+    "columns": [
+      "item_id",
+      "user_id",
+      "timestamp",
+      "action_type"
+    ],
+    "action_distribution": {
+      "to_cart": 68,
+      "remove": 47,
+      "page_view": 1410,
+      "unfavorite": 24,
+      "view_description": 307,
+      "favorite": 54,
+      "review_view": 90
+    },
+    "unique_users": 1010,
+    "unique_items": 10,
+    "time_range": {
+      "min": "2025-01-01 09:13:22",
+      "max": "2025-07-01 14:37:42"
+    }
+  },
+  "categories_analysis": {
+    "rows": 7012,
+    "total_categories": 7012,
+    "max_depth": 9,
+    "columns": [
+      "catalogid",
+      "catalogpath",
+      "ids"
+    ]
+  },
+  "visualizations_created": true,
+  "feature_plan": {
+    "user_features": [
+      "user_total_events",
+      "user_unique_items",
+      "user_activity_recency",
+      "user_buying_frequency",
+      "user_cart_add_rate",
+      "user_purchase_rate"
+    ],
+    "item_features": [
+      "item_popularity",
+      "item_recent_popularity",
+      "item_conversion_rate",
+      "item_category",
+      "item_price_tier",
+      "item_age"
+    ],
+    "user_item_features": [
+      "user_item_view_count",
+      "user_item_time_since_last_view",
+      "user_item_in_cart",
+      "user_item_in_wishlist"
+    ],
+    "context_features": [
+      "time_of_day",
+      "day_of_week",
+      "season",
+      "is_weekend"
+    ]
+  },
+  "engineering_plan": {
+    "steps": [
+      "1. Подготовка данных и очистка",
+      "2. Генерация user features из tracker данных",
+      "3. Генерация item features из items и tracker данных",
+      "4. Создание user-item interaction features",
+      "5. Добавление временных и контекстных features",
+      "6. Negative sampling и создание целевой переменной"
+    ],
+    "recommendations": [
+      "Использовать Polars для эффективной обработки",
+      "Применить временную валидацию",
+      "Использовать инкрементальную обработку для больших данных"
+    ]
+  },
+  "summary": {
+    "total_datasets_loaded": 5,
+    "total_rows_analyzed": 24012,
+    "analysis_timestamp": "2025-08-22T21:20:27.591844",
+    "memory_usage_mb": 2449.6484375
+  }
+}

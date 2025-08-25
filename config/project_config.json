@@ -1,0 +1,21 @@
+{
+  "project_name": "ecommerce-recommender",
+  "version": "1.0",
+  "created_date": "2025-08-21T00:51:08.972462",
+  "data_paths": {
+    "raw_data": "data/raw/",
+    "processed_data": "data/processed/",
+    "features": "data/processed/features.parquet"
+  },
+  "validation": {
+    "test_size_days": 30,
+    "n_cv_splits": 3,
+    "min_user_interactions": 3
+  },
+  "model_params": {
+    "objective": "binary",
+    "metric": "ndcg",
+    "num_leaves": 31,
+    "learning_rate": 0.05
+  }
+}

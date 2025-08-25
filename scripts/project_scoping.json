@@ -1,0 +1,116 @@
+{
+  "project_name": "E-commerce Recommendation System",
+  "version": "1.0",
+  "scoping_date": "2025-08-22",
+  "business_objective": {
+    "primary_goal": "Увеличение конверсии и среднего чека через персонализированные рекомендации",
+    "secondary_goals": [
+      "Уменьшение bounce rate",
+      "Увеличение времени на сайте",
+      "Снижение процента отмененных заказов"
+    ]
+  },
+  "problem_type": "Learning to Rank (LTR) для рекомендаций",
+  "success_metrics": {
+    "business_metrics": [
+      "CTR (Click-Through Rate) рекомендаций",
+      "Conversion Rate в покупки",
+      "Увеличение среднего количества товаров в заказе",
+      "Снижение процента отмен заказов на 15%"
+    ],
+    "technical_metrics": [
+      "Precision@K (K=5, 10)",
+      "Recall@K (K=5, 10)",
+      "NDCG@K (K=5, 10)",
+      "MAP (Mean Average Precision)",
+      "AUC-ROC для бинарной классификации"
+    ]
+  },
+  "data_sources": {
+    "primary_data": [
+      {
+        "name": "User Interactions",
+        "rows": 5000,
+        "purpose": "User behavior features"
+      },
+      {
+        "name": "Items Catalog",
+        "rows": 6000,
+        "purpose": "Item metadata and features"
+      },
+      {
+        "name": "Orders",
+        "rows": 4000,
+        "purpose": "Purchase signals and negative sampling"
+      },
+      {
+        "name": "Event Tracker",
+        "rows": 2000,
+        "purpose": "Detailed user actions"
+      }
+    ],
+    "coverage_analysis": {
+      "user_coverage": "74.8%",
+      "item_coverage": "16.3%"
+    }
+  },
+  "scope_inclusions": [
+    "Рекомендации на главной странице",
+    "Рекомендации в карточке товара ('Похожие товары')",
+    "Рекомендации в корзине",
+    "Персонализированные email-рассылки",
+    "Оффлайн-рекомендации для CRM"
+  ],
+  "scope_exclusions": [
+    "Реал-тайм рекомендации (первая версия)",
+    "Рекомендации для новых пользователей (cold start)",
+    "Мультимодальные embeddings (изображения, текст)",
+    "A/B тестирование нескольких моделей одновременно"
+  ],
+  "timeline": {
+    "phase_1": {
+      "duration": "2 недели",
+      "tasks": [
+        "Feature Engineering",
+        "Baseline модель"
+      ]
+    },
+    "phase_2": {
+      "duration": "3 недели",
+      "tasks": [
+        "Оптимизация модели",
+        "Оффлайн-валидация"
+      ]
+    },
+    "phase_3": {
+      "duration": "1 неделя",
+      "tasks": [
+        "Пилотное A/B тестирование"
+      ]
+    },
+    "phase_4": {
+      "duration": "2 недели",
+      "tasks": [
+        "Продакшн деплой",
+        "Мониторинг"
+      ]
+    }
+  },
+  "risks_and_assumptions": {
+    "data_risks": [
+      "Высокий процент отмененных заказов (37.6%)",
+      "Ограниченный охват товаров в трекере (всего 10 unique_items)",
+      "Синтетический характер данных (даты в 2025 году)"
+    ],
+    "technical_risks": [
+      "Cold start problem для новых пользователей/товаров",
+      "Классовый дисбаланс (мало покупок относительно просмотров)",
+      "Временной дрейф пользовательских предпочтений"
+    ],
+    "mitigation_strategies": [
+      "Использование контентных фич для cold start",
+      "Правильное взвешивание и сэмплирование",
+      "Регулярное переобучение модели"
+    ]
+  }
+}

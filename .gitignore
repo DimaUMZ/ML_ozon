@@ -1,0 +1,109 @@
+# Исключить папку data и всё её содержимое
+data/
+
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Директории для зависимостей
+node_modules/
+jspm_packages/
+# Для TypeScript папка типов
+typings/
+
+# Папки сборки
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# Кэш
+.cache/
+.parcel-cache/
+
+# Зависимости (кроме тех, что в node_modules)
+bower_components/
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Файлы окружения
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Временные файлы
+tmp/
+temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Пакетные менеджеры
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# Бинарные файлы
+*.exe
+*.dll
+*.obj
+*.so
+*.dylib
+
+# Архивы
+*.zip
+*.tar.gz
+*.rar
+
+# Документация
+/docs/_build/
+
+# Питон
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pyvenv.cfg
+venv/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# PHP
+vendor/

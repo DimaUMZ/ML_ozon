@@ -53,3 +53,74 @@ class ItemFeatureEngineer:
         hour_popularity = hour_popularity.div(hour_popularity.sum(axis=1), axis=0)
         
         return hour_popularity
+
+    def expand_items_attributes(self, df):
+        """Разбиение attributes в items на несколько признаков"""
+        
+        if df.empty:
+            print("❌ No data to expand attributes")
+            return pd.DataFrame()
+        
+        if 'attributes' not in df.columns:
+            print("⚠️ Attributes expansion skipped - no 'attributes' column found")
+            return df
+        
+        print(f"📊 Initial data for attributes expansion: {df.shape}")
+        print(f"📋 Columns before expansion: {list(df.columns)}")
+        
+        def process_attributes(attr_list):
+            if isinstance(attr_list, str):
+                try:
+                    if attr_list.startswith('['):
+                        attr_list = ast.literal_eval(attr_list)
+                    else:
+                        attr_list = attr_list.replace('null', 'None')
+                        attr_list = ast.literal_eval(attr_list)
+                except:
+                    return {}
+            
+            result = {}
+            for attr in attr_list:
+                name = attr.get('attribute_name')
+                value = attr.get('attribute_value')
+                if name:
+                    if name in result:
+                        if isinstance(result[name], list):
+                            result[name].append(value)
+                        else:
+                            result[name] = [result[name], value]
+                    else:
+                        result[name] = value
+            return result
+        
+        # Применяем функцию к каждой строке
+        expanded_data = df['attributes'].apply(process_attributes)
+        
+        # Создаем DataFrame из словарей
+        expanded_df = pd.json_normalize(expanded_data)
+        
+        # Объединяем с оригинальным DataFrame
+        result_df = pd.concat([df.drop('attributes', axis=1), expanded_df], axis=1)
+        
+        # Удаляем признаки с слишком большим количеством пропусков (>30%)
+        threshold = 0.3  # Порог: больше 30% пропусков
+        missing_ratio = result_df.isnull().mean()
+        columns_to_drop = missing_ratio[missing_ratio > threshold].index.tolist()
+        
+        if columns_to_drop:
+            print(f"🗑️ Removing columns with >{threshold*100:.0f}% missing values: {columns_to_drop}")
+            result_df = result_df.drop(columns=columns_to_drop)
+        
+        print(f"📊 After attributes expansion: {result_df.shape}")
+        print(f"📋 Columns after expansion: {list(result_df.columns)}")
+        
+        # Статистика по пропускам
+        if not result_df.empty:
+            missing_stats = result_df.isnull().mean().sort_values(ascending=False)
+            high_missing = missing_stats[missing_stats > 0]
+            if not high_missing.empty:
+                print("📈 Missing values statistics (columns with missing values):")
+                for col, ratio in high_missing.items():
+                    print(f"   - {col}: {ratio:.1%} missing")
+        
+        return result_df

@@ -2,7 +2,7 @@
 """
 Главный скрипт для построения фичей рекомендательной системы OZON
 """
-
+print("zebra")
 import pandas as pd
 import numpy as np
 import json

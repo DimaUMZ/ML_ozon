@@ -120,6 +120,93 @@ else:
             print(f"🎯 Targets: {targets.sum()}/{len(targets)} positive ({targets.mean():.2%})")
             return targets
 
+        def optimize_datasets_dtypes(self, df, verbose=True):
+            """Оптимизироване типов данных для уменьшения размера в памяти"""
+            if df.empty:
+                print("❌ DataFrame is empty - skipping optimization")
+                return df
+        
+            optimized_df = df.copy()
+            total_memory_before = optimized_df.memory_usage(deep=True).sum()
+            changes_made = 0
+        
+            print(f"🧮 Initial memory usage: {total_memory_before / 1024 ** 2:.2f} MB")
+            print(f"📊 Initial shape: {optimized_df.shape}")
+        
+            for column in optimized_df.columns:
+                current_dtype = optimized_df[column].dtype
+                memory_before = optimized_df[column].memory_usage(deep=True)
+            
+                # Пропускаем datetime колонки
+                if pd.api.types.is_datetime64_any_dtype(current_dtype):
+                    if verbose:
+                        print(f"   ⏰ {column}: {current_dtype} (datetime - skipped)")
+                    continue
+            
+                # Пропускаем сложные типы данных
+                if current_dtype == object and optimized_df[column].apply(
+                    lambda x: isinstance(x, (list, dict, np.ndarray))).any():
+                    if verbose:
+                        print(f"   🔄 {column}: complex type (list/dict/array - skipped)")
+                    continue
+            
+                new_dtype = current_dtype
+             
+                # Оптимизация числовых колонок
+                if pd.api.types.is_numeric_dtype(current_dtype):
+                    col_min = optimized_df[column].min()
+                    col_max = optimized_df[column].max()
+                
+                    if pd.api.types.is_integer_dtype(current_dtype):
+                        if col_min >= np.iinfo(np.int8).min and col_max <= np.iinfo(np.int8).max:
+                            new_dtype = 'int8'
+                        elif col_min >= np.iinfo(np.int16).min and col_max <= np.iinfo(np.int16).max:
+                            new_dtype = 'int16'
+                        elif col_min >= np.iinfo(np.int32).min and col_max <= np.iinfo(np.int32).max:
+                            new_dtype = 'int32'
+            
+                # Оптимизация строковых колонок в категории
+                elif current_dtype == 'object':
+                    unique_ratio = optimized_df[column].nunique() / len(optimized_df[column])
+                    if unique_ratio < 0.5:  # Меньше 50% уникальных значений
+                        new_dtype = 'category'
+            
+                # Применяем изменение типа если нужно
+                if str(new_dtype) != str(current_dtype):
+                    try:
+                        original_values = optimized_df[column].copy()
+                        optimized_df[column] = optimized_df[column].astype(new_dtype)
+                    
+                        # Проверка целостности данных
+                        if pd.api.types.is_numeric_dtype(current_dtype):
+                            if not np.array_equal(original_values, optimized_df[column], equal_nan=True):
+                                optimized_df[column] = original_values
+                                if verbose:
+                                    print(f"   ⚠️ {column}: data integrity check failed - reverted")
+                                continue
+                    
+                        memory_after = optimized_df[column].memory_usage(deep=True)
+                        memory_saved = memory_before - memory_after
+                        changes_made += 1
+                    
+                        if verbose:
+                            print(f"   ✅ {column}: {current_dtype} → {new_dtype} "
+                                f"(saved: {memory_saved / 1024:.1f} KB)")
+                        
+                    except (ValueError, TypeError) as e:
+                        if verbose:
+                            print(f"   ❌ {column}: conversion failed {current_dtype} → {new_dtype} ({str(e)})")
+        
+            # Вывод итоговой статистики
+            total_memory_after = optimized_df.memory_usage(deep=True).sum()
+            total_memory_saved = total_memory_before - total_memory_after
+        
+            print(f"📈 Final memory usage: {total_memory_after / 1024 ** 2:.2f} MB")
+            print(f"💾 Total memory saved: {total_memory_saved / 1024 ** 2:.2f} MB")
+            print(f"🔧 Columns optimized: {changes_made}/{len(df.columns)}")
+        
+            return optimized_df
+
 def explore_directory():
     """Исследование структуры директорий для отладки"""
     print("🔍 Exploring directory structure...")
